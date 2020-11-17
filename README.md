@@ -4,8 +4,6 @@ This lab using Classes and TkInter .
 
 In this lab we will be working in pairs using *pair programming*.
 
-This last lab is due the last week of classes.
-
 You should only work with your partner doing pair programming.
 Your presence in lab is required to receive participation credit.
 
