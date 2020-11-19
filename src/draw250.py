@@ -39,15 +39,21 @@ class Draw:
         # Top level menu buttons
         # @todo  We will eventually want a File menu that allows us to save and load shapes
         # @todo include option to clear canvas (or New canvas) and "save as" or save existing file.
-        available_commands = ['New', 'Open', 'Save', 'Save As', 'Exit']
-        self.file_mb = Menubutton(self.grid, text='File')#, menu=available_commands)
+        command_names = ['New', 'Open', 'Save', 'Save As', 'Exit']
+        self.file_mb = Menubutton(self.grid, text='File')
         self.file_mb.grid(row=0, column=0)
         self.file_mb.menu = Menu(self.file_mb)
         self.file_mb['menu'] = self.file_mb.menu
         #self.mayoVar = IntVar()
         # Add the commands to the file menubutton
-        for command in available_commands:
-            self.file_mb.menu.add_command(label=command)
+        # for i in range(len(command_names)):
+        #     self.file_mb.menu.add_command(label=command_names[i], command=command[i])
+        self.file_mb.menu.add_command(label='New', command=self.clear_canvas)
+        self.file_mb.menu.add_command(label='Open')
+        self.file_mb.menu.add_command(label='Save')
+        self.file_mb.menu.add_command(label='Save As')
+        self.file_mb.menu.add_separator()
+        self.file_mb.menu.add_command(label='Exit')
 
         # @todo - add choice of different shapes
         available_shapes = ['Circle', 'Ellipse', 'Rectangle', 'Square']  # @todo - need more
@@ -92,6 +98,9 @@ class Draw:
         print("button height=", self.fill_color_button.winfo_height())
 
         self.new_shape = None
+
+    def clear_canvas(self):
+        self.canvas.delete("all")
 
     def fill_toggle(self):
         print(" fill checkbox  ", self.fill_check.get())
