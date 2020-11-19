@@ -47,7 +47,7 @@ class Draw:
         #self.mayoVar = IntVar()
         # Add the commands to the file menubutton
         for command in available_commands:
-            self.file_mb.menu.add_checkbutton(label=command)
+            self.file_mb.menu.add_command(label=command)
 
         # @todo - add choice of different shapes
         available_shapes = ['Circle', 'Ellipse', 'Rectangle', 'Square']  # @todo - need more
