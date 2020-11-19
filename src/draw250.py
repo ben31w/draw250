@@ -53,7 +53,7 @@ class Draw:
         self.file_mb.menu.add_command(label='New', command=self.clear_canvas)
         self.file_mb.menu.add_command(label='Open', command=self.browse_files)
         self.file_mb.menu.add_command(label='Save')
-        self.file_mb.menu.add_command(label='Save As')
+        self.file_mb.menu.add_command(label='Save As', command=self.save_file_as)
         self.file_mb.menu.add_separator()
         self.file_mb.menu.add_command(label='Exit', command=quit)
 
@@ -110,6 +110,13 @@ class Draw:
         self.filename = filedialog.askopenfilename(initialdir=os.path.join("Desktop", "cpsc250l", "cpsc250l-lab12-f20"),
                                                    title="Select a File",
                                                    filetypes=(("Text files", "*.txt*"), ("all files", "*.*")))
+
+    def save_file_as(self):
+        """Opens a save as dialog box."""
+        files = [('All Files', '*.*'),
+                     ('Python Files', '*.py'),
+                     ('Text Document', '*.txt')]
+        self.file = filedialog.asksaveasfile(filetypes=files, defaultextension=files)
 
     def fill_toggle(self):
         print(" fill checkbox  ", self.fill_check.get())
