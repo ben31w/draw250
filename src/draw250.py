@@ -16,6 +16,9 @@ except ImportError:
     print("tkinter did not import successfully - check you are running Python 3 and that tkinter is available.")
     exit(1)
 
+import os
+from tkinter import filedialog
+
 from src.circle import Circle
 
 
@@ -44,16 +47,15 @@ class Draw:
         self.file_mb.grid(row=0, column=0)
         self.file_mb.menu = Menu(self.file_mb)
         self.file_mb['menu'] = self.file_mb.menu
-        #self.mayoVar = IntVar()
         # Add the commands to the file menubutton
         # for i in range(len(command_names)):
         #     self.file_mb.menu.add_command(label=command_names[i], command=command[i])
         self.file_mb.menu.add_command(label='New', command=self.clear_canvas)
-        self.file_mb.menu.add_command(label='Open')
+        self.file_mb.menu.add_command(label='Open', command=self.browse_files)
         self.file_mb.menu.add_command(label='Save')
         self.file_mb.menu.add_command(label='Save As')
         self.file_mb.menu.add_separator()
-        self.file_mb.menu.add_command(label='Exit')
+        self.file_mb.menu.add_command(label='Exit', command=quit)
 
         # @todo - add choice of different shapes
         available_shapes = ['Circle', 'Ellipse', 'Rectangle', 'Square']  # @todo - need more
@@ -100,7 +102,14 @@ class Draw:
         self.new_shape = None
 
     def clear_canvas(self):
+        """Clear the canvas."""
         self.canvas.delete("all")
+
+    def browse_files(self):
+        """Open a file explorer."""
+        self.filename = filedialog.askopenfilename(initialdir=os.path.join("Desktop", "cpsc250l", "cpsc250l-lab12-f20"),
+                                                   title="Select a File",
+                                                   filetypes=(("Text files", "*.txt*"), ("all files", "*.*")))
 
     def fill_toggle(self):
         print(" fill checkbox  ", self.fill_check.get())
