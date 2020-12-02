@@ -242,7 +242,6 @@ class Draw:
 
     def set_root_title(self):
         """Set the title of the root window."""
-        print(self.file_name)
         if self.file_name is not None:
             self.root.title(f"Draw 250 - {self.file_name}")
         else:
