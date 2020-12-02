@@ -5,19 +5,18 @@
 """
 Draw250
 @author Ben Wright, Alaaeldin Haroun
-@version 2020.11.18
+@version 2020.12.01
 """
+import os
+import pickle
 
 try:
     from tkinter import *
+    from tkinter import filedialog
     from tkinter.colorchooser import askcolor
-    #@todo - you likely need to import some filedialog methods
 except ImportError:
     print("tkinter did not import successfully - check you are running Python 3 and that tkinter is available.")
     exit(1)
-
-import os
-from tkinter import filedialog
 
 from src.circle import Circle
 
@@ -40,20 +39,15 @@ class Draw:
         self.grid.grid_rowconfigure(3, weight=1)
 
         # Top level menu buttons
-        # @todo  We will eventually want a File menu that allows us to save and load shapes
-        # @todo include option to clear canvas (or New canvas) and "save as" or save existing file.
-        command_names = ['New', 'Open', 'Save', 'Save As', 'Exit']
         self.file_mb = Menubutton(self.grid, text='File')
         self.file_mb.grid(row=0, column=0)
         self.file_mb.menu = Menu(self.file_mb)
         self.file_mb['menu'] = self.file_mb.menu
         # Add the commands to the file menubutton
-        # for i in range(len(command_names)):
-        #     self.file_mb.menu.add_command(label=command_names[i], command=command[i])
         self.file_mb.menu.add_command(label='New', command=self.clear_canvas)
         self.file_mb.menu.add_command(label='Open', command=self.browse_files)
-        self.file_mb.menu.add_command(label='Save')
-        self.file_mb.menu.add_command(label='Save As', command=self.save_file_as)
+        self.file_mb.menu.add_command(label='Save', command=self.save_file_dialog)
+        self.file_mb.menu.add_command(label='Save As', command=self.save_as_file_dialog)
         self.file_mb.menu.add_separator()
         self.file_mb.menu.add_command(label='Exit', command=quit)
 
@@ -81,14 +75,14 @@ class Draw:
 
         self.edge_color = 'red'
 
-        #@todo - allow to select the edge color as well
+        # @todo - allow to select the edge color as well
 
         # Row 1 Canvas
         self.canvas = Canvas(self.grid, background='white', width=width, height=height)
         self.canvas.grid(row=2, column=0, columnspan=7)
 
-        self.canvas.bind("<Button-1>",        self.select)
-        self.canvas.bind("<B1-Motion>",       self.drag)
+        self.canvas.bind("<Button-1>", self.select)
+        self.canvas.bind("<B1-Motion>", self.drag)
         self.canvas.bind("<ButtonRelease-1>", self.release)
 
         print("Default shape choice:", self.shape_choice.get())
@@ -101,45 +95,34 @@ class Draw:
 
         self.new_shape = None
 
-    def clear_canvas(self):
-        """Clear the canvas."""
-        self.canvas.delete("all")
+    def add_shape(self, shape):
+        """Add a shape to the list of shapes."""
+        print("Adding ", shape)
+        self.shapes.append(shape)
 
     def browse_files(self):
-        """Open a file explorer."""
-        self.filename = filedialog.askopenfilename(initialdir=os.path.join("Desktop", "cpsc250l", "cpsc250l-lab12-f20"),
-                                                   title="Select a File",
-                                                   filetypes=(("Text files", "*.txt*"), ("all files", "*.*")))
-
-    def save_file_as(self):
-        """Opens a save as dialog box."""
-        files = [('All Files', '*.*'),
-                     ('Python Files', '*.py'),
-                     ('Text Document', '*.txt')]
-        self.file = filedialog.asksaveasfile(filetypes=files, defaultextension=files)
-
-    def fill_toggle(self):
-        print(" fill checkbox  ", self.fill_check.get())
-        if self.fill_check.get():
-            self.fill_color = self.prior_fill_color
-        else:
-            self.fill_color = ''
-
-    def select(self, event):
         """
-        On select (button press) we create a temporary shape used to
-        draw the stretchy "rubber band" used to define the extents
-        :param event:
-        :return:
+        Open a file explorer and prompt the user to select a DWG file to open.
         """
-        print("Select:" , event.x, event.y)
-        print("Creating ", self.shape_choice.get()," at (", event.x,", ",event.y,") !")
-        cls = Circle # @todo - need to get selected shape definition
-        print(" class : ", cls.__name__)
-        print("  fill=", self.fill_color, ' edge=', self.edge_color)
-        self.new_shape = cls(event.x, event.y, dx=0, dy=0,
-                                fill_color=self.fill_color,
-                                edge_color=self.edge_color)
+        self.file_name = filedialog.askopenfilename(defaultextension='.dwg',
+                                                    initialdir=os.path.join("Desktop", "cpsc250l",
+                                                                            "cpsc250l-lab12-f20"),
+                                                    title="Select a File",
+                                                    filetypes=(("DWG files", "*.dwg*"), ("all files", "*.*")))
+        self.load_shapes(self.file_name)
+
+    def choose_fill_color(self):
+        get_color = askcolor(color=self.fill_color)
+        print(" get_color=", get_color)
+        self.fill_color = get_color[1]
+        self.fill_canvas.configure(background=self.fill_color)
+        self.prior_fill_color = self.fill_color
+        self.fill_check_box.select()  # Selecting color automatically selects fill
+
+    def clear_canvas(self):
+        """Clear the canvas and remove all shapes."""
+        self.shapes.clear()
+        self.repaint()
 
     def drag(self, event):
         """
@@ -150,7 +133,28 @@ class Draw:
         print("Drag: ", event.x, event.y)
         dx = abs(self.new_shape.x - event.x)
         dy = abs(self.new_shape.y - event.y)
-        self.new_shape.update(self.canvas, dx, dy, dash_style=(5,5))
+        self.new_shape.update(self.canvas, dx, dy, dash_style=(5, 5))
+
+    def fill_toggle(self):
+        print(" fill checkbox  ", self.fill_check.get())
+        if self.fill_check.get():
+            self.fill_color = self.prior_fill_color
+        else:
+            self.fill_color = ''
+
+    def load_shapes(self, filename):
+        """
+        Given a binary filename with a list of shapes (i.e., a DWG file), load
+        the shapes from that file onto the canvas.
+        :param filename: a binary file with a list of shapes
+        """
+        # Clear the canvas before loading shapes.
+        self.clear_canvas()
+
+        # Load the file and put the shapes on the canvas.
+        loaded_shapes = pickle.load(open(filename, 'rb'))
+        for shape in loaded_shapes:
+            shape.draw(self.canvas)
 
     def release(self, event):
         """
@@ -158,32 +162,20 @@ class Draw:
         :param event:
         :return:
         """
-        #print("Release: ",event.x, event.y)
+        # print("Release: ", event.x, event.y)
         dx = abs(self.new_shape.x - event.x)
         dy = abs(self.new_shape.y - event.y)
 
         self.canvas.delete(self.new_shape.tk_id)
 
-        print("Completing ",self.shape_choice.get(), " !")
+        print("Completing ", self.shape_choice.get(), " !")
         cls = Circle  # @todo - handle creating the selected shape
         print("   with ", cls)
         self.add_shape(cls(self.new_shape.x, self.new_shape.y,
-                           dx=dx,dy=dy,fill_color=self.fill_color,
+                           dx=dx, dy=dy, fill_color=self.fill_color,
                            edge_color=self.edge_color))
         self.repaint()
         self.new_shape = None
-
-    def choose_fill_color(self):
-        get_color = askcolor(color=self.fill_color)
-        print(" get_color=", get_color)
-        self.fill_color = get_color[1]
-        self.fill_canvas.configure(background=self.fill_color)
-        self.prior_fill_color = self.fill_color
-        self.fill_check_box.select()  # Selecting color automatically selects fill
-
-    def add_shape(self, shape):
-        print("Adding ", shape)
-        self.shapes.append(shape)
 
     def repaint(self):
         print("Repaint the canvas")
@@ -199,9 +191,47 @@ class Draw:
         self.root.mainloop()
         print("     done run!")
 
+    def save_as_file_dialog(self):
+        """Opens a save as dialog box and lets the user save a file."""
+        self.file_name = filedialog.asksaveasfilename(initialdir=".", title="Select file",
+                                                      filetypes=(("drawing files", "*.dwg"), ("all files", "*.*")))
+        if self.file_name is not None and len(self.file_name) > 0:
+            self.save_shapes()
 
-if __name__=='__main__':
+    def save_file_dialog(self):
+        """Saves the user's work."""
+        if self.file_name is None:
+            self.save_as_file_dialog()
+        else:
+            self.save_shapes()
 
+    def save_shapes(self):
+        """Save the shapes to a binary file."""
+        try:
+            pickle.dump(self.shapes, open(self.file_name, "wb"))
+            self.unsaved = False
+        except Exception as e:
+            print(e)
+            print("Cannot save shapes")
+
+    def select(self, event):
+        """
+        On select (button press) we create a temporary shape used to
+        draw the stretchy "rubber band" used to define the extents
+        :param event:
+        :return:
+        """
+        print("Select:", event.x, event.y)
+        print("Creating ", self.shape_choice.get(), " at (", event.x, ", ", event.y, ") !")
+        cls = Circle  # @todo - need to get selected shape definition
+        print(" class : ", cls.__name__)
+        print("  fill=", self.fill_color, ' edge=', self.edge_color)
+        self.new_shape = cls(event.x, event.y, dx=0, dy=0,
+                             fill_color=self.fill_color,
+                             edge_color=self.edge_color)
+
+
+if __name__ == '__main__':
     # @TODO - YOU MIGHT WANT TO INITIALIZE AVAILABLE SHAPES HERE
 
     print("Create drawing program for CPSC 250")
