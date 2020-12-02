@@ -31,7 +31,7 @@ class Draw:
 
         # Set up the root window
         self.root = Tk()
-        self.root.title("Draw 250")
+        self.set_root_title()
 
         # Define our layout grid
         self.grid = Frame(self.root)
@@ -44,7 +44,7 @@ class Draw:
         self.file_mb.menu = Menu(self.file_mb)
         self.file_mb['menu'] = self.file_mb.menu
         # Add the commands to the file menubutton
-        self.file_mb.menu.add_command(label='New', command=self.clear_canvas)
+        self.file_mb.menu.add_command(label='New', command=lambda: [self.clear_canvas(), self.reset_file_name()])
         self.file_mb.menu.add_command(label='Open', command=self.browse_files)
         self.file_mb.menu.add_command(label='Save', command=self.save_file_dialog)
         self.file_mb.menu.add_command(label='Save As', command=self.save_as_file_dialog)
@@ -99,6 +99,7 @@ class Draw:
         """Add a shape to the list of shapes."""
         print("Adding ", shape)
         self.shapes.append(shape)
+        self.unsaved = True
 
     def browse_files(self):
         """
@@ -109,6 +110,7 @@ class Draw:
                                                                             "cpsc250l-lab12-f20"),
                                                     title="Select a File",
                                                     filetypes=(("DWG files", "*.dwg*"), ("all files", "*.*")))
+        self.set_root_title()
         self.load_shapes(self.file_name)
 
     def choose_fill_color(self):
@@ -152,9 +154,12 @@ class Draw:
         self.clear_canvas()
 
         # Load the file and put the shapes on the canvas.
-        loaded_shapes = pickle.load(open(filename, 'rb'))
-        for shape in loaded_shapes:
+        self.shapes = pickle.load(open(filename, 'rb'))
+        for shape in self.shapes:
             shape.draw(self.canvas)
+
+        # The newly opened file should not have unsaved work.
+        self.unsaved = False
 
     def release(self, event):
         """
@@ -185,6 +190,11 @@ class Draw:
             shape.draw(self.canvas)
 
         print("Done repainting!")
+
+    def reset_file_name(self):
+        """Reset the current file to None."""
+        self.file_name = None
+        self.set_root_title()
 
     def run(self):
         print("     inside Draw run loop ...")
@@ -229,6 +239,14 @@ class Draw:
         self.new_shape = cls(event.x, event.y, dx=0, dy=0,
                              fill_color=self.fill_color,
                              edge_color=self.edge_color)
+
+    def set_root_title(self):
+        """Set the title of the root window."""
+        print(self.file_name)
+        if self.file_name is not None:
+            self.root.title(f"Draw 250 - {self.file_name}")
+        else:
+            self.root.title(f"Draw 250 - untitled work")
 
 
 if __name__ == '__main__':
