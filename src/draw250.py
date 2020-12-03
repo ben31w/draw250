@@ -74,7 +74,15 @@ class Draw:
         self.fill_canvas = Canvas(self.grid, background=self.fill_color, width=15, height=15)
         self.fill_canvas.grid(row=1, column=5, sticky=W)
 
+        # Edge Color
         self.edge_color = 'red'
+        self.prior_edge_color = 'red'
+
+        self.edge_color_button = Button(self.grid, text='edge color', command=self.choose_edge_color)
+        self.edge_color_button.grid(row=1, column=6, sticky=E)
+
+        self.edge_canvas = Canvas(self.grid, background=self.edge_color, width=15, height=15)
+        self.edge_canvas.grid(row=1, column=7, sticky=W)
 
         # @todo - allow to select the edge color as well
 
@@ -131,6 +139,13 @@ class Draw:
         self.fill_canvas.configure(background=self.fill_color)
         self.prior_fill_color = self.fill_color
         self.fill_check_box.select()  # Selecting color automatically selects fill
+
+    def choose_edge_color(self):
+        get_color = askcolor(color=self.edge_color)
+        print(" get_color=", get_color)
+        self.edge_color = get_color[1]
+        self.edge_canvas.configure(background=self.edge_color)
+        self.prior_edge_color = self.edge_color
 
     def clear_canvas(self):
         """Clear the canvas and remove all shapes."""
