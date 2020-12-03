@@ -8,8 +8,9 @@ class Square(Shape):
         super().__init__(x, y, fill_color, edge_color, dash_style, dx, dy)
 
         if height is None and width is None and dx is not None and dy is not None:
-            height = dy * 2
-            width = dx * 2
+            x = max(dy, dx)
+            height = x * 2
+            width = x * 2
 
         if height is None or width is None:
             raise InvalidShapeParameterError("square is not defined!!")
