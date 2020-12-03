@@ -19,6 +19,7 @@ except ImportError:
     exit(1)
 
 from src.circle import Circle
+from src.ellipse import Ellipse
 
 
 class Draw:
@@ -94,6 +95,16 @@ class Draw:
         print("button height=", self.fill_color_button.winfo_height())
 
         self.new_shape = None
+
+    def shape_selection(self):
+        if self.shape_choice.get() == "Circle":
+            return Circle
+        elif self.shape_choice.get() == "Ellipse":
+            return Ellipse
+        # elif self.shape_choice == "Square":
+        #     return Square
+        # elif self.shape_choice == "Rectangle":
+        #     return Rectangle
 
     def add_shape(self, shape):
         """Add a shape to the list of shapes."""
@@ -174,7 +185,7 @@ class Draw:
         self.canvas.delete(self.new_shape.tk_id)
 
         print("Completing ", self.shape_choice.get(), " !")
-        cls = Circle  # @todo - handle creating the selected shape
+        cls = self.shape_selection()  # @todo - handle creating the selected shape
         print("   with ", cls)
         self.add_shape(cls(self.new_shape.x, self.new_shape.y,
                            dx=dx, dy=dy, fill_color=self.fill_color,
@@ -233,7 +244,7 @@ class Draw:
         """
         print("Select:", event.x, event.y)
         print("Creating ", self.shape_choice.get(), " at (", event.x, ", ", event.y, ") !")
-        cls = Circle  # @todo - need to get selected shape definition
+        cls = self.shape_selection()  # @todo - need to get selected shape definition
         print(" class : ", cls.__name__)
         print("  fill=", self.fill_color, ' edge=', self.edge_color)
         self.new_shape = cls(event.x, event.y, dx=0, dy=0,
