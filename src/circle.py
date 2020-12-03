@@ -19,7 +19,7 @@ class Circle(Shape):  # @todo - just a simple circle class for now, but is this 
 
     def __str__(self):
         """
-        Return special string for circle, not based on ellipse
+        Return special string for circle
         :return:
         """
         return f"{Shape.__str__(self)} r={self.radius}"

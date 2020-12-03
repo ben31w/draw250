@@ -12,7 +12,7 @@ class Rectangle(Shape):
             width = dx * 2
 
         if height is None or width is None:
-            raise InvalidShapeParameterError("rectangle is not defined!!")
+            raise InvalidShapeParameterError("Rectangle: height and width are not is not defined!!")
 
         self.x_axis = width / 2
         self.y_axis = height / 2
@@ -21,7 +21,7 @@ class Rectangle(Shape):
 
     def __str__(self):
         """
-        Return special string for circle, not based on ellipse
+        Return special string for rectangle
         :return:
         """
         return f"{Shape.__str__(self)} w={self.width} h={self.height}"

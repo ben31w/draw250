@@ -12,7 +12,7 @@ class Shape:
 
     def __str__(self):
         """
-        Return special string for circle, not based on ellipse
+        Return special string shapes
         :return:
         """
 
