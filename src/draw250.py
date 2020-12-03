@@ -55,13 +55,14 @@ class Draw:
         self.file_mb.menu.add_command(label='Exit', command=quit)
 
         # @todo - add choice of different shapes
-        available_shapes = ['Circle', 'Ellipse', 'Rectangle', 'Square']  # @todo - need more
+        available_shapes = ['Circle', 'Ellipse', 'Rectangle', 'Square']  # list of shapes available
         self.shape_choice = StringVar(self.root)  # Initialize string to hold value
         self.shape_choice.set(available_shapes[0])  # default value
 
         self.shape_choice_menu = OptionMenu(self.grid, self.shape_choice, *available_shapes)
         self.shape_choice_menu.grid(row=1, column=2)
 
+        # Shape fill color and box check
         self.fill_color = 'blue'
         self.prior_fill_color = 'blue'
 
@@ -86,8 +87,6 @@ class Draw:
         self.edge_canvas = Canvas(self.grid, background=self.edge_color, width=15, height=15)
         self.edge_canvas.grid(row=1, column=7, sticky=W)
 
-        # @todo - allow to select the edge color as well
-
         # Row 1 Canvas
         self.canvas = Canvas(self.grid, background='white', width=width, height=height)
         self.canvas.grid(row=2, column=0, columnspan=7)
@@ -107,6 +106,10 @@ class Draw:
         self.new_shape = None
 
     def shape_selection(self):
+        """
+        returns the shape the user selected
+        :return: The shape selected from the list
+        """
         if self.shape_choice.get() == "Circle":
             return Circle
         elif self.shape_choice.get() == "Ellipse":
@@ -135,6 +138,7 @@ class Draw:
         self.load_shapes(self.file_name)
 
     def choose_fill_color(self):
+        """Sets the shape fill color"""
         get_color = askcolor(color=self.fill_color)
         print(" get_color=", get_color)
         self.fill_color = get_color[1]
@@ -143,6 +147,7 @@ class Draw:
         self.fill_check_box.select()  # Selecting color automatically selects fill
 
     def choose_edge_color(self):
+        """Sets the shape's edge color"""
         get_color = askcolor(color=self.edge_color)
         print(" get_color=", get_color)
         self.edge_color = get_color[1]
