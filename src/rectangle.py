@@ -2,7 +2,7 @@ from src.invalid_shape_parameter_error import InvalidShapeParameterError
 from src.shapes import Shape
 
 
-class Square(Shape):
+class Rectangle(Shape):
     def __init__(self, x, y, height=None, width=None, fill_color='', edge_color='red', dash_style=None, dx=None,
                  dy=None, ):
         super().__init__(x, y, fill_color, edge_color, dash_style, dx, dy)
@@ -12,7 +12,7 @@ class Square(Shape):
             width = dx * 2
 
         if height is None or width is None:
-            raise InvalidShapeParameterError("square is not defined!!")
+            raise InvalidShapeParameterError("rectangle is not defined!!")
 
         self.x_axis = width / 2
         self.y_axis = height / 2

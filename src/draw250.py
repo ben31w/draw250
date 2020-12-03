@@ -21,6 +21,7 @@ except ImportError:
 from src.circle import Circle
 from src.ellipse import Ellipse
 from src.square import Square
+from src.rectangle import Rectangle
 
 
 class Draw:
@@ -110,10 +111,10 @@ class Draw:
             return Circle
         elif self.shape_choice.get() == "Ellipse":
             return Ellipse
-        elif self.shape_choice == "Square":
+        elif self.shape_choice.get() == "Square":
             return Square
-        # elif self.shape_choice == "Rectangle":
-        #     return Rectangle
+        elif self.shape_choice.get() == "Rectangle":
+            return Rectangle
 
     def add_shape(self, shape):
         """Add a shape to the list of shapes."""
