@@ -20,6 +20,7 @@ except ImportError:
 
 from src.circle import Circle
 from src.ellipse import Ellipse
+from src.square import Square
 
 
 class Draw:
@@ -109,8 +110,8 @@ class Draw:
             return Circle
         elif self.shape_choice.get() == "Ellipse":
             return Ellipse
-        # elif self.shape_choice == "Square":
-        #     return Square
+        elif self.shape_choice == "Square":
+            return Square
         # elif self.shape_choice == "Rectangle":
         #     return Rectangle
 

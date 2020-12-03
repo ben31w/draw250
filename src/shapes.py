@@ -1,6 +1,3 @@
-from src.invalid_shape_parameter_error import InvalidShapeParameterError
-
-
 class Shape:
     def __init__(self, x, y, fill_color='', edge_color='red', dash_style=None, dx=None, dy=None):
 
