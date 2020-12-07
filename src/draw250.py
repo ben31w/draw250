@@ -253,6 +253,7 @@ class Draw:
         try:
             pickle.dump(self.shapes, open(self.file_name, "wb"))
             self.unsaved = False
+            self.set_root_title()
         except Exception as e:
             print(e)
             print("Cannot save shapes")
