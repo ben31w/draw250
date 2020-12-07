@@ -1,5 +1,5 @@
 from src.invalid_shape_parameter_error import InvalidShapeParameterError
-from src.shapes import Shape
+from src.shape import Shape
 
 
 class Square(Shape):

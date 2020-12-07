@@ -43,7 +43,7 @@ class Draw:
 
         # Top level menu buttons
         self.file_mb = Menubutton(self.grid, text='File')
-        self.file_mb.grid(row=0, column=0)
+        self.file_mb.grid(row=0, column=0, sticky=W)
         self.file_mb.menu = Menu(self.file_mb)
         self.file_mb['menu'] = self.file_mb.menu
         # Add the commands to the file menubutton
@@ -54,13 +54,13 @@ class Draw:
         self.file_mb.menu.add_separator()
         self.file_mb.menu.add_command(label='Exit', command=quit)
 
-        # @todo - add choice of different shapes
+        # Shape choice menu
         available_shapes = ['Circle', 'Ellipse', 'Rectangle', 'Square']  # list of shapes available
         self.shape_choice = StringVar(self.root)  # Initialize string to hold value
         self.shape_choice.set(available_shapes[0])  # default value
 
         self.shape_choice_menu = OptionMenu(self.grid, self.shape_choice, *available_shapes)
-        self.shape_choice_menu.grid(row=1, column=2)
+        self.shape_choice_menu.grid(row=1, column=1)
 
         # Shape fill color and box check
         self.fill_color = 'blue'
@@ -68,24 +68,24 @@ class Draw:
 
         self.fill_check = BooleanVar(self.root, value=True)
         self.fill_check_box = Checkbutton(self.grid, text='fill', variable=self.fill_check, command=self.fill_toggle)
-        self.fill_check_box.grid(row=1, column=3, sticky=E)
+        self.fill_check_box.grid(row=1, column=2, sticky=E)
         self.fill_check_box.select()  # Start checked by default
 
         self.fill_color_button = Button(self.grid, text='fill color', command=self.choose_fill_color)
-        self.fill_color_button.grid(row=1, column=4, sticky=E)
+        self.fill_color_button.grid(row=1, column=3, sticky=E)
 
         self.fill_canvas = Canvas(self.grid, background=self.fill_color, width=15, height=15)
-        self.fill_canvas.grid(row=1, column=5, sticky=W)
+        self.fill_canvas.grid(row=1, column=4, sticky=W)
 
         # Edge Color
         self.edge_color = 'red'
         self.prior_edge_color = 'red'
 
         self.edge_color_button = Button(self.grid, text='edge color', command=self.choose_edge_color)
-        self.edge_color_button.grid(row=1, column=6, sticky=E)
+        self.edge_color_button.grid(row=1, column=5, sticky=E)
 
         self.edge_canvas = Canvas(self.grid, background=self.edge_color, width=15, height=15)
-        self.edge_canvas.grid(row=1, column=7, sticky=W)
+        self.edge_canvas.grid(row=1, column=6, sticky=W)
 
         # Row 1 Canvas
         self.canvas = Canvas(self.grid, background='white', width=width, height=height)
