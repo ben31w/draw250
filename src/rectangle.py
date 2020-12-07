@@ -7,6 +7,9 @@ class Rectangle(Shape):
                  dy=None, ):
         super().__init__(x, y, fill_color, edge_color, dash_style, dx, dy)
 
+        # If height and width are not given, but dx and dy are (dx and dy are
+        # the mouse's distance from the center in terms of x and y, respectively),
+        # make height double dy and width double dx.
         if height is None and width is None and dx is not None and dy is not None:
             height = dy * 2
             width = dx * 2

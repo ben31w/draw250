@@ -207,7 +207,7 @@ class Draw:
         self.canvas.delete(self.new_shape.tk_id)
 
         print("Completing ", self.shape_choice.get(), " !")
-        cls = self.shape_selection()  # @todo - handle creating the selected shape
+        cls = self.shape_selection()
         print("   with ", cls)
         self.add_shape(cls(self.new_shape.x, self.new_shape.y,
                            dx=dx, dy=dy, fill_color=self.fill_color,

@@ -2,11 +2,15 @@ from src.invalid_shape_parameter_error import InvalidShapeParameterError
 from src.shape import Shape
 
 
-class Circle(Shape):  # @todo - just a simple circle class for now, but is this the best way?
+class Circle(Shape):
 
     def __init__(self, x, y, radius=None, fill_color='', edge_color='red', dash_style=None, dx=None, dy=None):
 
         super().__init__(x, y, fill_color, edge_color, dash_style, dx, dy)
+
+        # If radius is not given, but dx and dy are (dx and dy are the mouse's
+        # distance from the center in terms of x and y, respectively), make radius
+        # the max between dx and dy.
         if radius is None and dx is not None and dy is not None:
             radius = max(dx, dy)
 
