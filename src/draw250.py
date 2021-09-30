@@ -3,9 +3,13 @@
 # https://github.com/mozilla/stoneridge/blob/master/python/src/Demo/tkinter/matt/rubber-band-box-demo-1.py
 # https://gist.github.com/nikhilkumarsingh/85501ee2c3d8c0cfa9d1a27be5781f06
 """
-Draw250
+Draw250:
+This a GUI program that allows you make and save your own drawings, as well as open previous drawings.
+You can draw circles, ellipses, rectangles, and squares. You can save your work, open previous
+drawings, and create blank canvases using the File menubar.
+
 @author Ben Wright, Alaaeldin Haroun
-@version 2020.12.01
+@version 2021.09.03
 """
 import os
 import pickle
@@ -27,10 +31,17 @@ from src.rectangle import Rectangle
 class Draw:
 
     def __init__(self, width, height):
-
+        """
+        Define the layout of the window, and set up the canvas.
+        Initialize variables to store the shapes that the user draws, the name of the file they are working on,
+        and whether their work is unsaved.
+        :param width: the width of the frame in pixels
+        :param height: the height of the frame in pixels
+        """
         self.shapes = list()
         self.file_name = None
         self.unsaved = False
+        self.new_shape = None
 
         # Set up the root window
         self.root = Tk()
@@ -87,7 +98,7 @@ class Draw:
         self.edge_canvas = Canvas(self.grid, background=self.edge_color, width=15, height=15)
         self.edge_canvas.grid(row=1, column=6, sticky=W)
 
-        # Row 1 Canvas
+        # The Canvas
         self.canvas = Canvas(self.grid, background='white', width=width, height=height)
         self.canvas.grid(row=2, column=0, columnspan=7)
 
@@ -95,15 +106,7 @@ class Draw:
         self.canvas.bind("<B1-Motion>", self.drag)
         self.canvas.bind("<ButtonRelease-1>", self.release)
 
-        print("Default shape choice:", self.shape_choice.get())
-
-        # Row 2 Status messages
-
-        # Let's add a label that shows the mouse position
         self.grid.pack()
-        print("button height=", self.fill_color_button.winfo_height())
-
-        self.new_shape = None
 
     def shape_selection(self):
         """
@@ -121,7 +124,7 @@ class Draw:
 
     def add_shape(self, shape):
         """Add a shape to the list of shapes."""
-        print("Adding ", shape)
+        print("\tAdding ", shape)
         self.shapes.append(shape)
         self.unsaved = True
 
@@ -165,7 +168,6 @@ class Draw:
         :param event:
         :return:
         """
-        print("Drag: ", event.x, event.y)
         dx = abs(self.new_shape.x - event.x)
         dy = abs(self.new_shape.y - event.y)
         self.new_shape.update(self.canvas, dx, dy, dash_style=(5, 5))
@@ -200,15 +202,14 @@ class Draw:
         :param event:
         :return:
         """
-        # print("Release: ", event.x, event.y)
+        print("\tRelease: ", event.x, event.y)
         dx = abs(self.new_shape.x - event.x)
         dy = abs(self.new_shape.y - event.y)
 
         self.canvas.delete(self.new_shape.tk_id)
 
-        print("Completing ", self.shape_choice.get(), " !")
+        print("\tCompleting ", self.shape_choice.get(), "!")
         cls = self.shape_selection()
-        print("   with ", cls)
         self.add_shape(cls(self.new_shape.x, self.new_shape.y,
                            dx=dx, dy=dy, fill_color=self.fill_color,
                            edge_color=self.edge_color))
@@ -216,13 +217,13 @@ class Draw:
         self.new_shape = None
 
     def repaint(self):
-        print("Repaint the canvas")
+        print("\tRepaint the canvas")
         self.canvas.delete("all")
 
         for shape in self.shapes:
             shape.draw(self.canvas)
 
-        print("Done repainting!")
+        print("\tDone repainting!")
 
     def reset_file_name(self):
         """Reset the current file to None."""
@@ -230,9 +231,9 @@ class Draw:
         self.set_root_title()
 
     def run(self):
-        print("     inside Draw run loop ...")
+        print("inside Draw run loop ...")
         self.root.mainloop()
-        print("     done run!")
+        print("done running!")
 
     def save_as_file_dialog(self):
         """Opens a save as dialog box and lets the user save a file."""
@@ -265,11 +266,10 @@ class Draw:
         :param event:
         :return:
         """
-        print("Select:", event.x, event.y)
-        print("Creating ", self.shape_choice.get(), " at (", event.x, ", ", event.y, ") !")
-        cls = self.shape_selection()  # @todo - need to get selected shape definition
-        print(" class : ", cls.__name__)
-        print("  fill=", self.fill_color, ' edge=', self.edge_color)
+        print("\tCreating ", self.shape_choice.get(), " at (", event.x, ", ", event.y, ")")
+        cls = self.shape_selection()
+        print("\t class : ", cls.__name__)
+        print("\t fill=", self.fill_color, ' edge=', self.edge_color)
         self.new_shape = cls(event.x, event.y, dx=0, dy=0,
                              fill_color=self.fill_color,
                              edge_color=self.edge_color)
@@ -283,15 +283,10 @@ class Draw:
 
 
 if __name__ == '__main__':
-    # @TODO - YOU MIGHT WANT TO INITIALIZE AVAILABLE SHAPES HERE
-
-    print("Create drawing program for CPSC 250")
     draw = Draw(800, 600)
 
     draw.repaint()
     draw.run()
     print("Done run loop - call save_shapes ...")
-
-    # @TODO - If you added shapes you might want to give the user option to save to file
 
     print("Done drawing!")
