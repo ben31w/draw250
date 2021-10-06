@@ -22,10 +22,10 @@ except ImportError:
     print("tkinter did not import successfully - check you are running Python 3 and that tkinter is available.")
     exit(1)
 
-from src.circle import Circle
-from src.ellipse import Ellipse
-from src.square import Square
-from src.rectangle import Rectangle
+from circle import Circle
+from ellipse import Ellipse
+from square import Square
+from rectangle import Rectangle
 
 
 class Draw:

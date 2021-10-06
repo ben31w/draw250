@@ -1,6 +1,6 @@
-from src.invalid_shape_parameter_error import InvalidShapeParameterError
-from src.shape import Shape
-from src.rectangle import Rectangle
+from invalid_shape_parameter_error import InvalidShapeParameterError
+from shape import Shape
+from rectangle import Rectangle
 
 
 class Square(Rectangle):

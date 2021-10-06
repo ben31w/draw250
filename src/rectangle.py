@@ -1,5 +1,5 @@
-from src.invalid_shape_parameter_error import InvalidShapeParameterError
-from src.shape import Shape
+from invalid_shape_parameter_error import InvalidShapeParameterError
+from shape import Shape
 
 
 class Rectangle(Shape):
