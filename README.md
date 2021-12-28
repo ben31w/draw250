@@ -6,7 +6,7 @@ To use the program, run the file `draw250.py`.
 
 The project uses class heirarchy to support the various shapes the user can draw. The classes are contianed in the files `shape.py`, `circle.py`, `ellipse.py`, `rectangle.py`, and `square.py`.
 
-Drawings are saved as binary `.dwg` files. To view these files, open them in the draw250 program (File -> Open -> (select file to display). 
+Drawings are saved as binary `.dwg` files. To view these files, open them in the draw250 program (File -> Open -> [select file to display]). 
 
 # Sample drawings
 ![draw250-blue-circles](https://user-images.githubusercontent.com/78334282/138126629-51e10338-da07-4284-a98e-cf9c423b5601.png)
